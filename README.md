@@ -1,70 +1,174 @@
-# Getting Started with Create React App
+# Library Management Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web app for the management of books, users and the Issue and Return of Books in a library.
 
-## Available Scripts
+## User Permissions
 
-In the project directory, you can run:
+### Student
 
-### `npm start`
+A student can
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* register himself on the app
+* view and edit his profile
+* change his password
+* search for books and view availabilty
+* view his issue history
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Admin
 
-### `npm test`
+An admin can
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* view and edit his profile
+* search for books and view availability
+* view, Edit or Delete existing books
+* add new books
+* issue a book to a student
+* return a book issued earlier
+* view all stats of the library
+* view issue log and the profile of all the students
+* view the profile of all admins 
 
-### `npm run build`
+## A note to the viewers
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. You can try logging in as an **admin** by entering the following credentials:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* **username**: *Director*
+* **password**: *123pass*
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. You can also register yourself as a student and then login to view the options available to a student.
 
-### `npm run eject`
+## View live App
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Hosted at https://lib-manage.herokuapp.com/
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Tech Stack Used
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### The MERN Stack
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+* [MongoDB](https://docs.mongodb.com/) - Document database - to store data as JSON 
+* [Express.js](https://devdocs.io/express/) - Back-end web application framework running on top of Node.js
+* [React](https://reactjs.org/docs/) - Front-end web app framework used
+* [Node.js](https://nodejs.org/en/docs/) - JavaScript runtime environment 
 
-## Learn More
+### Middleware
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+* [Redux](https://redux.js.org/basics/usage-with-react) - For flux architecture, and fetching rapidly data
+* [Mongoose](https://mongoosejs.com/docs/guide.html) - ODM for MongoDB
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Steps followed to setup the project
 
-### Code Splitting
+### Setting up server and database
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. Initialise a package.json file by entering the following command in terminal, after getting into the project directory :
 
-### Analyzing the Bundle Size
+```(bash)
+npm init
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+2. Install npm packages required for backend side :
 
-### Making a Progressive Web App
+```(bash)
+npm i express body-parser mongoose concurrently
+npm i -D nodemon
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. Create a file server.js to make use of the express packages 
 
-### Advanced Configuration
+4. Modify the package.json by adding the following scripts to it :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```(JSON)
+  "start": "node server.js",
+  "server": "nodemon server.js",
+```
+
+5. Create an account on MongoDB cloud Atlas, thereafter, creating a database on it and get your MongoURI exported from a file keys.js in a folder config
+
+6. Modify server.js to get connected to the database, using the MongoURI and also add the following lines at the end of server.js :
+
+```(JavaScript)
+const port = process.env.PORT || 5000;
+app.listen(port, ()=> console.log(`Server started running on port ${port}`));
+```
+
+7. Type the following command to get your server running on your localhost and ensure hot-reloading, when the server-side code is modified :
+
+```(bash)
+npm run server
+```
+
+8. Make Schemas for various collections to be stored in database and export them from a folder models and the REST APIs for various routes in the folder routes. Change the server.js accordingly to make the use of these REST APIs. Ensure that the APIs are working correctly, by making requests using POSTMAN
+
+9. Add JWT token based authentication and 'cors' module and use them in server.js. 
+
+### Setting up the React client
+
+1. Create a folder 'client' in the project directory. Ensure that you have create-react-app CLI installed. Enter the following commands in terminal :
+
+```(bash)
+cd client
+create-react-app .
+cd ..
+```
+
+2. In the package.json of the server, add the following scripts :
+
+```(JSON)
+"client-install": "npm install --prefix client",
+"client": "npm start --prefix client",
+"dev": "concurrently \"npm run server\" \"npm run client\" ",
+```
+
+3. Remove all the additional default setup from client folder like logo, index.css, etc. Then, configure the client to make use of *bootstrap* and *reactstrap* to make the app responsive by using following commands in terminal :
+
+```(bash)
+cd client
+npm i bootstrap reactstrap react-popper font-awesome bootstrap-social
+```
+
+Add the following line to index.js :
+
+```(JavaScript)
+import 'bootstrap/dist/css/bootstrap.min.css
+```
+
+4. Install Redux for maintaining the state :
+
+```(Terminal)
+npm i redux react-redux redux-thunk
+```
+
+5. Create a redux store, the various actions and reducers required in a folder named redux. Make corresponding changes in the React components to map the actions and state to props
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Add the following lines to server.js :
 
-### `npm run build` fails to minify
+```(JavaScript)
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('client/build'));
+  
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+  }
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+2. Add the following script to the package.json of server
+
+```(JSON)
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+```
+
+3. Install Heroku CLI and make sure you have intialised a git repository in the project directory. Enter the following commands in the terminal :
+
+```(bash)
+heroku login
+heroku create
+git add .
+git commit -am "Deployed to Heroku"
+git push heroku master
+```
+
+4. Open your heroku account and click on **Open App** option in the dashboard.
